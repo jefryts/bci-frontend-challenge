@@ -1,0 +1,21 @@
+<div
+  class="dialog-container"
+  role="dialog"
+  aria-labelledby="dialog-title"
+  aria-describedby="dialog-desc"
+>
+  @if(data.title) {
+  <h2 id="dialog-title" mat-dialog-title>{{ data.title }}</h2>
+  }
+  <p id="dialog-desc">{{ data.message }}</p>
+  <div class="actions">
+    @if(data.confirmText) {
+    <button mat-button (click)="closeDialog(true)">
+      {{ data.confirmText }}
+    </button>
+    }
+    <button mat-button (click)="closeDialog(false)">
+      {{ data.cancelText ?? "OK" }}
+    </button>
+  </div>
+</div>

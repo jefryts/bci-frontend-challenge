@@ -1,0 +1,13 @@
+.dialog-container {
+  padding: 0.5rem 1rem;
+  text-align: center;
+
+  p {
+    margin-bottom: 1rem;
+  }
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+}

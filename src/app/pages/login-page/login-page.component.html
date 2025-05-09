@@ -1,0 +1,42 @@
+<div class="login-page">
+  <h2 id="login-title" class="login-page__title">Iniciar Sesión</h2>
+  <form
+    aria-labelledby="login-title"
+    class="login-form"
+    [formGroup]="loginForm()"
+    (ngSubmit)="onSubmit()"
+  >
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label for="email">Correo Electrónico</mat-label>
+      <input
+        aria-required="true"
+        matInput
+        id="email"
+        type="email"
+        formControlName="email"
+        required
+      />
+      @if(loginForm().controls['email'].invalid &&
+      loginForm().controls['email'].touched &&
+      loginForm().controls['email'].errors?.['required']) {
+      <mat-error>El email es obligatorio.</mat-error>
+      } @if(loginForm().controls['email'].invalid &&
+      loginForm().controls['email'].touched &&
+      loginForm().controls['email'].errors?.['email']) {
+      <mat-error>El email es inválido.</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="login-form-actions">
+      <button
+        class="full-width"
+        aria-label="Iniciar sesión"
+        mat-flat-button
+        color="primary"
+        type="submit"
+      >
+        Ingresar
+      </button>
+    </div>
+  </form>
+</div>

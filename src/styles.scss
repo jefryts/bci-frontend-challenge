@@ -1,0 +1,62 @@
+/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: #f8f9fa;
+  scroll-behavior: smooth;
+
+  --mat-sys-corner-full: 4px;
+  --mat-sys-corner-extra-large: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+form {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+input,
+button {
+  max-width: 100%;
+}
+
+button {
+  &:focus-visible {
+    outline: 2px solid #0056b3;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+input {
+  &:focus-visible {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

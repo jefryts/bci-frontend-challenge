@@ -1,0 +1,100 @@
+<div class="task-page">
+  <header class="task-header">
+    <h1 class="task-header__title">Mis Tareas</h1>
+    <button
+      class="task-header__logout"
+      mat-button
+      color="warn"
+      (click)="logout()"
+    >
+      Cerrar Sesión
+    </button>
+  </header>
+
+  <div class="task-body">
+    <form
+      class="task-form"
+      [formGroup]="taskForm()"
+      (ngSubmit)="addOrUpdateTask()"
+    >
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label for="title">Título</mat-label>
+        <input matInput id="title" formControlName="title" required />
+        @if( taskForm().controls['title'].invalid &&
+        taskForm().controls['title'].touched) {
+        <mat-error> El título es obligatorio. </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label for="description">Descripción</mat-label>
+        <textarea
+          matInput
+          id="description"
+          formControlName="description"
+        ></textarea>
+        @if(taskForm().controls['description'].invalid &&
+        taskForm().controls['description'].touched) {
+        <mat-error> La descripción es obligatoria. </mat-error>
+        }
+      </mat-form-field>
+
+      <div class="task-form-actions">
+        <button mat-raised-button color="primary" type="submit">
+          {{ editingTask() ? "Guardar Cambios" : "Agregar Tarea" }}
+        </button>
+        @if(editingTask()) {
+        <button mat-raised-button color="red" (click)="resetForm()">
+          Cancelar
+        </button>
+        }
+      </div>
+    </form>
+
+    @if (taskList().length) {
+    <div class="task-list">
+      @for (task of taskList(); track task.id) {
+      <div class="task-card" @fade>
+        <div class="task-card-header">
+          <mat-checkbox
+            [id]="'completed-' + task.id"
+            [name]="'completed-' + task.id"
+            [checked]="task.completed"
+            (change)="toggleTaskCompletion(task.id)"
+          >
+            <label
+              [attr.for]="'completed-' + task.id"
+              class="task-card-header__title"
+              >{{ task.title }}</label
+            >
+          </mat-checkbox>
+          <span
+            class="task-card-header__status"
+            [ngClass]="{
+              'task-card-header__status--completed': task.completed
+            }"
+            >{{ task.completed ? "Completado" : "No completado" }}</span
+          >
+        </div>
+        <div class="task-card-content">
+          <p class="task-card-content__description">{{ task.description }}</p>
+          <span class="task-card-content__date"
+            >Creado el: {{ task.createdAt | date : "short" }}</span
+          >
+        </div>
+        <div class="task-card-actions">
+          <button mat-icon-button color="primary" (click)="startEditing(task)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="red" (click)="deleteTask(task.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      }
+    </div>
+    } @else {
+    <p>No hay tareas pendientes.</p>
+    }
+  </div>
+</div>
