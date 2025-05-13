@@ -22,8 +22,12 @@
       <mat-error>El email es obligatorio.</mat-error>
       } @if(loginForm().controls['email'].invalid &&
       loginForm().controls['email'].touched &&
-      loginForm().controls['email'].errors?.['email']) {
+      loginForm().controls['email'].hasError('email')) {
       <mat-error>El email es inválido.</mat-error>
+      } @if(loginForm().controls['email'].invalid &&
+      loginForm().controls['email'].touched &&
+      loginForm().controls['email'].hasError('smartjobEmail')) {
+      <mat-error>El email no pertecenece a smartjob.com</mat-error>
       }
     </mat-form-field>
 

@@ -8,10 +8,12 @@ import {
 } from '@angular/core';
 import { DatePipe, NgClass } from '@angular/common';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   FormGroupDirective,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -71,6 +73,8 @@ export class TaskPageComponent implements OnInit, OnDestroy {
 
   private readonly formBuilder: FormBuilder = inject(FormBuilder);
 
+  isLoading: boolean = false;
+
   taskList = this.taskService.tasks;
 
   editingTask = signal<boolean>(false);
@@ -78,8 +82,24 @@ export class TaskPageComponent implements OnInit, OnDestroy {
   taskForm = signal<FormGroup>(
     this.formBuilder.group({
       id: [null],
-      title: ['', Validators.required],
-      description: ['', Validators.required],
+      title: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(50),
+          this.withoutSpaces,
+        ],
+      ],
+      description: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(200),
+          this.withoutSpaces,
+        ],
+      ],
       completed: [false],
     })
   );
@@ -88,9 +108,25 @@ export class TaskPageComponent implements OnInit, OnDestroy {
     this.taskService.getTasks();
   }
 
+  private withoutSpaces(control: AbstractControl): ValidationErrors | null {
+    const value = control.value ?? '';
+    return value.trim().length === 0 ? { soloEspacios: true } : null;
+  }
+
   addOrUpdateTask() {
     if (!this.taskForm().valid) return;
+    this.isLoading = true;
     const taskData = this.taskForm().value;
+
+    const existingTask = this.taskList().some(
+      (t) =>
+        t.title.trim().toLowerCase() === taskData.title.trim().toLowerCase()
+    );
+
+    if (existingTask) {
+      this.taskForm().setErrors({ taskDuplicated: true });
+      return;
+    }
 
     if (this.editingTask()) {
       this.taskService.updateTask(taskData.id, taskData);
@@ -101,6 +137,7 @@ export class TaskPageComponent implements OnInit, OnDestroy {
     }
 
     this.resetForm();
+    this.isLoading = false;
   }
 
   startEditing(task: Task) {

@@ -7,9 +7,12 @@ import { MatError, MatFormFieldModule } from '@angular/material/form-field';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
@@ -38,9 +41,27 @@ export class LoginPageComponent {
 
   loginForm = signal<FormGroup>(
     this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          this.smartjobEmailValidator(),
+        ],
+      ],
     })
   );
+
+  private smartjobEmailValidator(): ValidatorFn {
+    const regex = /^[a-zA-Z0-9._-]+@smartjob\.com$/;
+  
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (!value) return null; //Esto para que no valide si está vacío (eso lo validará Validators.required)
+  
+      return regex.test(value) ? null : { smartjobEmail: true };
+    };
+  }
 
   async onSubmit() {
     if (!this.loginForm().valid) return;

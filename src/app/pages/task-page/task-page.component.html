@@ -23,6 +23,10 @@
         @if( taskForm().controls['title'].invalid &&
         taskForm().controls['title'].touched) {
         <mat-error> El título es obligatorio. </mat-error>
+        } @if(taskForm().controls['title'].invalid &&
+        taskForm().controls['title'].touched &&
+        taskForm().hasError('taskDuplicated')) {
+        <mat-error> Esta tarea ya fue creada. </mat-error>
         }
       </mat-form-field>
 
@@ -40,11 +44,22 @@
       </mat-form-field>
 
       <div class="task-form-actions">
-        <button mat-raised-button color="primary" type="submit">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="isLoading"
+        >
           {{ editingTask() ? "Guardar Cambios" : "Agregar Tarea" }}
         </button>
+
         @if(editingTask()) {
-        <button mat-raised-button color="red" (click)="resetForm()">
+        <button
+          mat-raised-button
+          color="red"
+          [disabled]="isLoading"
+          (click)="resetForm()"
+        >
           Cancelar
         </button>
         }
@@ -83,9 +98,11 @@
           >
         </div>
         <div class="task-card-actions">
+          @if(editingTask()) {
           <button mat-icon-button color="primary" (click)="startEditing(task)">
             <mat-icon>edit</mat-icon>
           </button>
+          }
           <button mat-icon-button color="red" (click)="deleteTask(task.id)">
             <mat-icon>delete</mat-icon>
           </button>
